@@ -8,6 +8,18 @@ The agent requests tools; the system executes them.
 from typing import Any
 
 
+def weather(country:str) ->str:
+    
+    weathers = {
+        'tokyo': 'Sunny',
+        'Spain': 'Rainy',
+        'Jordan': 'Hotest in the earth'
+    }
+    if country not in weathers:
+        raise ValueError(f'Unknown country:{ country}')
+    return weathers[country]
+        
+
 def calculator(a: float, b: float, operation: str = "add") -> float:
     """
     Simple calculator tool.
@@ -75,6 +87,7 @@ def execute_tool(tool_name: str, arguments: dict) -> Any:
     """
     tools = {
         "calculator": calculator,
+        "weather" : weather
     }
     
     if tool_name not in tools:

@@ -179,14 +179,18 @@ Available choices:
 Required JSON format:
 {{"decision": "one_of_the_choices_above"}}
 
+
 User request: {user_input}
 
 Response (JSON only):"""
         
         for attempt in range(3):
-            response = self.llm.generate(prompt, temperature=0.0)
+            response = self.llm.generate(prompt, temperature=0.0,stop=["}", "\n"],)
+            if not response.endswith("}") and "{" in response:
+                 response += "}"
+            print(f"DEBUG ATTEMPT {attempt}: {repr(response)}")
             parsed = extract_json_from_text(response)
-            
+           
             if parsed and "decision" in parsed:
                 decision = parsed["decision"]
                 if decision in choices:
@@ -217,13 +221,21 @@ You are a tool-calling assistant. When asked a math question, you must respond w
 Available tool: calculator
 - Parameters: a (number), b (number), operation ("add", "subtract", "multiply", or "divide")
 
+
+
+Example format:
+{{"tool": "calculator", "arguments": {{"a": 42, "b": 7, "operation": "multiply"}}}}
+
+Another tool : weather
+-Parameters : country (name of the contry which is string)
+
+Example format:
+{{"tool": "weather", "arguments": {{"country" : "Jordan"}}}}
+
 CRITICAL INSTRUCTIONS:
 1. Respond with ONLY valid JSON
 2. No explanations, no markdown, no other text
 3. Start your response with {{ and end with }}
-
-Example format:
-{{"tool": "calculator", "arguments": {{"a": 42, "b": 7, "operation": "multiply"}}}}
 
 User request: {user_input}
 
@@ -231,6 +243,7 @@ Response (JSON only):"""
         
         for attempt in range(3):
             response = self.llm.generate(prompt, temperature=0.0)
+            print(response)
             parsed = extract_json_from_text(response)
             
             if parsed and "tool" in parsed and "arguments" in parsed:
@@ -289,7 +302,7 @@ User input: {user_input}
 Response (JSON only):"""
         
         for attempt in range(3):
-            response = self.llm.generate(prompt, temperature=0.0)
+            response = self.llm.generate(prompt, temperature=0.5)
             parsed = extract_json_from_text(response)
             
             if parsed and "action" in parsed:

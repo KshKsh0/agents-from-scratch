@@ -25,8 +25,8 @@ class LocalLLM:
     def __init__(
         self,
         model_path: str,
-        temperature: float = 0.2,
-        max_tokens: int = 512,
+        temperature: float = 1.0,
+        max_tokens: int = 400,
         n_ctx: int = 2048
     ):
         """
@@ -46,7 +46,7 @@ class LocalLLM:
         )
         self.max_tokens = max_tokens
     
-    def generate(self, prompt: str, temperature: float = None, stop: list[str] = None) -> str:
+    def generate(self, prompt: str, temperature: float = .2, stop: list[str] = None) -> str:
         """
         Generate text from a prompt.
         
